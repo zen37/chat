@@ -24,7 +24,7 @@ func (c *client) read() {
 	defer c.socket.Close()
 	for {
 		_, msg, err := c.socket.ReadMessage()
-		log.Println("read msg: ", msg)
+		log.Println("read msg: ", string(msg))
 		if err != nil {
 			log.Println("Error : something terrible happen -> ", err)
 			return
@@ -40,7 +40,7 @@ func (c *client) write() {
 	defer c.socket.Close()
 	for msg := range c.send {
 		err := c.socket.WriteMessage(websocket.TextMessage, msg)
-		log.Println("write msg: ", msg)
+		log.Println("write msg: ", string(msg))
 		if err != nil {
 			log.Println("Error : something terrible happen -> ", err)
 			return
