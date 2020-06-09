@@ -24,17 +24,20 @@ type room struct {
 	leave chan *client
 
 	//holds all current clients in this room
-	clients map[*client]bool
+	clients map[*client]struct{}
 }
 
 func (r *room) run() {
 	log.Println("I am in run function")
+
+	var empty struct{}
+
 	for {
 		select {
 		//if a message is received in any of the room channels
 		//select will run the code for the respective channel
 		case client := <-r.join:
-			r.clients[client] = true
+			r.clients[client] = empty
 		case client := <-r.leave:
 			delete(r.clients, client)
 			close(client.send)
@@ -78,6 +81,6 @@ func newRoom() *room {
 		forward: make(chan []byte),
 		join:    make(chan *client),
 		leave:   make(chan *client),
-		clients: make(map[*client]bool),
+		clients: make(map[*client]struct{}),
 	}
 }
